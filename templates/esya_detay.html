@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}{{ esya.baslik }} - Bağış Platformu{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Geri Dön Butonu -->
+        <div class="col-12 mb-3">
+            <a href="{{ url_for('esyalar') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Ana İçerik -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <!-- Eşya Başlığı -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h2 class="mb-0">{{ esya.baslik }}</h2>
+                        <span class="badge bg-primary fs-6">{{ esya.kategori }}</span>
+                    </div>
+
+                    <!-- Eşya Açıklaması -->
+                    <div class="mb-4">
+                        <h5><i class="fas fa-align-left"></i> Açıklama</h5>
+                        <p class="text-muted">{{ esya.aciklama }}</p>
+                    </div>
+
+                    <!-- Eşya Bilgileri -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-info-circle"></i> Eşya Bilgileri</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Kategori:</strong> {{ esya.kategori }}</li>
+                                <li><strong>Durum:</strong> 
+                                    <span class="badge bg-success">{{ esya.durum|title }}</span>
+                                </li>
+                                <li><strong>Bağış Tarihi:</strong> {{ esya.bagis_tarihi.strftime('%d.%m.%Y %H:%M') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bağışçı Bilgileri -->
+                    <div class="mb-4">
+                        <h5><i class="fas fa-user"></i> Bağışçı Bilgileri</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>Ad Soyad:</strong> {{ esya.bagislayan.ad }}</p>
+                                        {% if esya.bagislayan.adres %}
+                                        <p class="mb-1"><strong>Konum:</strong> {{ esya.bagislayan.adres }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>Üyelik Tarihi:</strong> {{ esya.bagislayan.kayit_tarihi.strftime('%d.%m.%Y') }}</p>
+                                        <p class="mb-0"><strong>Toplam Bağış:</strong> {{ esya.bagislayan.bagislar|length }} eşya</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Önemli Notlar -->
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Önemli Notlar:</h6>
+                        <ul class="mb-0">
+                            <li>Eşya teslimi konusunda bağışçıyla karşılıklı anlaşın</li>
+                            <li>Güvenliğiniz için halka açık yerlerde buluşun</li>
+                            <li>Eşya beklenenden farklıysa nezaketle durumu belirtin</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yan Panel -->
+        <div class="col-lg-4">
+            <!-- Durum Kartı -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Durum</h5>
+                </div>
+                <div class="card-body text-center">
+                    {% if esya.durum == 'mevcut' %}
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <h5 class="text-success">Mevcut</h5>
+                        <p class="text-muted">Bu eşya hala mevcut ve talep edilebilir.</p>
+                        
+                        <!-- Talep Et Butonu -->
+                        <a href="{{ url_for('talep_et', esya_id=esya.id) }}" 
+                           class="btn btn-success btn-lg w-100 mb-2">
+                            <i class="fas fa-hand-paper"></i> Bu Eşyayı Talep Et
+                        </a>
+                    {% elif esya.durum == 'rezerve' %}
+                        <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                        <h5 class="text-warning">Rezerve</h5>
+                        <p class="text-muted">Bu eşya şu anda rezerve edilmiş.</p>
+                    {% else %}
+                        <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
+                        <h5 class="text-danger">Verildi</h5>
+                        <p class="text-muted">Bu eşya artık mevcut değil.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Benzer Eşyalar -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-tags"></i> Bu Kategorideki Diğer Eşyalar</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('esyalar', kategori=esya.kategori) }}" 
+                       class="btn btn-outline-primary w-100">
+                        <i class="fas fa-search"></i> {{ esya.kategori }} Kategorisine Bak
+                    </a>
+                </div>
+            </div>
+
+            <!-- Yardım -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-question-circle"></i> Yardıma mı ihtiyacınız var?</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">
+                        Eşya talebi konusunda sorunuz mu var? 
+                    </p>
+                    <a href="{{ url_for('hakkimizda') }}" class="btn btn-outline-info btn-sm w-100">
+                        <i class="fas fa-info-circle"></i> Yardım Al
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Talepler (Sadece bağışçı görebilir - şimdilik gizli) -->
+    {% if esya.talepler and false %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-list"></i> Gelen Talepler ({{ esya.talepler|length }})</h5>
+                </div>
+                <div class="card-body">
+                    {% for talep in esya.talepler %}
+                    <div class="border-bottom py-3">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6>{{ talep.talep_eden.ad }}</h6>
+                                <p class="text-muted mb-1">{{ talep.mesaj }}</p>
+                                <small class="text-muted">{{ talep.talep_tarihi.strftime('%d.%m.%Y %H:%M') }}</small>
+                            </div>
+                            <span class="badge bg-{{ 'warning' if talep.durum == 'beklemede' else 'success' }}">
+                                {{ talep.durum|title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

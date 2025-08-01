@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Tüm Eşyalar - Bağış Platformu{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Başlık ve Arama -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="fas fa-list"></i> Tüm Eşyalar</h2>
+            <p class="text-muted">İhtiyacınız olan eşyaları bulun ve bağışçıyla iletişime geçin</p>
+        </div>
+    </div>
+
+    <!-- Filtreleme ve Arama -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="arama" class="form-label">
+                                <i class="fas fa-search"></i> Arama
+                            </label>
+                            <input type="text" class="form-control" id="arama" name="arama" 
+                                   value="{{ arama_terimi }}" placeholder="Eşya adı veya açıklama...">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="kategori" class="form-label">
+                                <i class="fas fa-filter"></i> Kategori
+                            </label>
+                            <select class="form-select" id="kategori" name="kategori">
+                                <option value="">Tüm Kategoriler</option>
+                                {% for kategori_tuple in kategoriler %}
+                                <option value="{{ kategori_tuple[0] }}" 
+                                        {% if secili_kategori == kategori_tuple[0] %}selected{% endif %}>
+                                    {{ kategori_tuple[0] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Ara
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sonuçlar -->
+    {% if esyalar %}
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5>{{ esyalar|length }} eşya bulundu</h5>
+                <a href="{{ url_for('esyalar') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-times"></i> Filtreleri Temizle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Eşya Kartları -->
+    <div class="row">
+        {% for esya in esyalar %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary">{{ esya.kategori }}</span>
+                        <small class="text-muted">{{ esya.bagis_tarihi.strftime('%d.%m.%Y') }}</small>
+                    </div>
+                    
+                    <h5 class="card-title">{{ esya.baslik }}</h5>
+                    
+                    <p class="card-text text-muted">
+                        {{ esya.aciklama[:120] }}{% if esya.aciklama|length > 120 %}...{% endif %}
+                    </p>
+                    
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-user"></i> {{ esya.bagislayan.ad }}
+                            </small>
+                            {% if esya.bagislayan.adres %}
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt"></i> {{ esya.bagislayan.adres }}
+                            </small>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('esya_detay', esya_id=esya.id) }}" 
+                               class="btn btn-outline-primary btn-sm flex-fill">
+                                <i class="fas fa-eye"></i> Detay
+                            </a>
+                            <a href="{{ url_for('talep_et', esya_id=esya.id) }}" 
+                               class="btn btn-success btn-sm flex-fill">
+                                <i class="fas fa-hand-paper"></i> Talep Et
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% else %}
+    <!-- Eşya Bulunamadı -->
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="fas fa-search fa-3x text-muted"></i>
+        </div>
+        <h4>Aradığınız kriterlerde eşya bulunamadı</h4>
+        <p class="text-muted">Farklı arama terimleri kullanmayı deneyin veya filtreleri değiştirin.</p>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('esyalar') }}" class="btn btn-primary me-2">
+                <i class="fas fa-list"></i> Tüm Eşyaları Gör
+            </a>
+            <a href="{{ url_for('bagis_yap') }}" class="btn btn-outline-primary">
+                <i class="fas fa-plus-circle"></i> Eşya Bağışla
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Sayfanın altında kategoriler -->
+{% if kategoriler %}
+<section class="bg-light py-4">
+    <div class="container">
+        <h5 class="mb-3">Popüler Kategoriler:</h5>
+        <div class="d-flex flex-wrap gap-2">
+            {% for kategori_tuple in kategoriler %}
+            <a href="{{ url_for('esyalar', kategori=kategori_tuple[0]) }}" 
+               class="btn btn-outline-primary btn-sm">
+                {{ kategori_tuple[0] }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

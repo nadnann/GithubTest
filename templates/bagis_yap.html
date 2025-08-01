@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Bağış Yap - Bağış Platformu{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-heart"></i> Bağış Yapın
+                    </h3>
+                    <p class="mb-0">Kullanmadığınız eşyaları ihtiyaç sahipleriyle paylaşın</p>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Kişisel Bilgiler -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5><i class="fas fa-user"></i> Kişisel Bilgileriniz</h5>
+                                <hr>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="ad" class="form-label">
+                                    <i class="fas fa-user"></i> Adınız Soyadınız *
+                                </label>
+                                <input type="text" class="form-control" id="ad" name="ad" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i> E-posta Adresiniz *
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="telefon" class="form-label">
+                                    <i class="fas fa-phone"></i> Telefon Numaranız
+                                </label>
+                                <input type="tel" class="form-control" id="telefon" name="telefon" placeholder="05XX XXX XX XX">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="adres" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i> Adresiniz
+                                </label>
+                                <input type="text" class="form-control" id="adres" name="adres" placeholder="İl, İlçe">
+                            </div>
+                        </div>
+
+                        <!-- Eşya Bilgileri -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5><i class="fas fa-gift"></i> Eşya Bilgileri</h5>
+                                <hr>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="baslik" class="form-label">
+                                <i class="fas fa-tag"></i> Eşya Başlığı *
+                            </label>
+                            <input type="text" class="form-control" id="baslik" name="baslik" 
+                                   placeholder="Örn: Çok az kullanılmış laptop" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="kategori" class="form-label">
+                                <i class="fas fa-list"></i> Kategori *
+                            </label>
+                            <select class="form-select" id="kategori" name="kategori" required>
+                                <option value="">Kategori seçin</option>
+                                <option value="Elektronik">Elektronik</option>
+                                <option value="Giyim">Giyim</option>
+                                <option value="Ev Eşyası">Ev Eşyası</option>
+                                <option value="Kitap">Kitap</option>
+                                <option value="Oyuncak">Oyuncak</option>
+                                <option value="Spor">Spor</option>
+                                <option value="Mobilya">Mobilya</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="aciklama" class="form-label">
+                                <i class="fas fa-align-left"></i> Açıklama *
+                            </label>
+                            <textarea class="form-control" id="aciklama" name="aciklama" rows="4" 
+                                      placeholder="Eşyanızın durumunu, özelliklerini ve varsa eksiklerini detaylı bir şekilde açıklayın..." required></textarea>
+                            <div class="form-text">
+                                Eşyanızın durumu, boyutu, rengi gibi detayları belirtmeniz ihtiyaç sahiplerinin daha iyi karar vermesine yardımcı olur.
+                            </div>
+                        </div>
+
+                        <!-- Önemli Bilgilendirme -->
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle"></i> Önemli Bilgiler:</h6>
+                            <ul class="mb-0">
+                                <li>Bağışınızı yayınladıktan sonra ihtiyaç sahipleri sizinle iletişime geçecektir.</li>
+                                <li>Eşyanızın teslimi konusunda karşılıklı anlaşarak hareket edin.</li>
+                                <li>Temiz ve kullanılabilir durumda olan eşyaları bağışlayın.</li>
+                                <li>İletişim bilgilerinizi doğru girdiğinizden emin olun.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Sözleşme -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="sozlesme" required>
+                                <label class="form-check-label" for="sozlesme">
+                                    Bağışladığım eşyanın temiz ve kullanılabilir durumda olduğunu, 
+                                    verilen bilgilerin doğru olduğunu kabul ediyorum. *
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('ana_sayfa') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-heart"></i> Bağışı Yayınla
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

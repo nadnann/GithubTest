@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Talep Et: {{ esya.baslik }} - Bağış Platformu{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Eşya Özeti -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-gift"></i> Talep Ettiğiniz Eşya</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>{{ esya.baslik }}</h5>
+                            <p class="text-muted mb-2">{{ esya.aciklama[:150] }}...</p>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-primary me-2">{{ esya.kategori }}</span>
+                                <small class="text-muted">
+                                    <i class="fas fa-user"></i> {{ esya.bagislayan.ad }}
+                                    {% if esya.bagislayan.adres %}
+                                    | <i class="fas fa-map-marker-alt"></i> {{ esya.bagislayan.adres }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('esya_detay', esya_id=esya.id) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> Detayı Gör
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Talep Formu -->
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-hand-paper"></i> Talep Formu
+                    </h4>
+                    <p class="mb-0">Bu eşyayı talep etmek için aşağıdaki formu doldurun</p>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Kişisel Bilgiler -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5><i class="fas fa-user"></i> Kişisel Bilgileriniz</h5>
+                                <hr>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="ad" class="form-label">
+                                    <i class="fas fa-user"></i> Adınız Soyadınız *
+                                </label>
+                                <input type="text" class="form-control" id="ad" name="ad" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i> E-posta Adresiniz *
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="form-text">Bağışçı sizinle bu e-posta adresi üzerinden iletişime geçecektir.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="telefon" class="form-label">
+                                <i class="fas fa-phone"></i> Telefon Numaranız (Önerilir)
+                            </label>
+                            <input type="tel" class="form-control" id="telefon" name="telefon" 
+                                   placeholder="05XX XXX XX XX">
+                            <div class="form-text">Telefon numaranız hızlı iletişim için faydalı olacaktır.</div>
+                        </div>
+
+                        <!-- Talep Mesajı -->
+                        <div class="mb-4">
+                            <label for="mesaj" class="form-label">
+                                <i class="fas fa-comment"></i> Mesajınız (İsteğe Bağlı)
+                            </label>
+                            <textarea class="form-control" id="mesaj" name="mesaj" rows="4" 
+                                      placeholder="Bu eşyaya neden ihtiyacınız olduğunu, nasıl kullanacağınızı veya sorularınızı belirtebilirsiniz..."></textarea>
+                            <div class="form-text">
+                                Kısa bir mesaj bağışçının size güvenmesine yardımcı olabilir.
+                            </div>
+                        </div>
+
+                        <!-- Önemli Bilgilendirme -->
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle"></i> Talep Sonrası Süreç:</h6>
+                            <ol class="mb-0">
+                                <li>Talebiniz bağışçıya iletilecektir</li>
+                                <li>Bağışçı sizinle e-posta veya telefon ile iletişime geçecektir</li>
+                                <li>Buluşma yeri ve zamanını karşılıklı belirleyeceksiniz</li>
+                                <li>Güvenliğiniz için halka açık yerlerde buluşun</li>
+                            </ol>
+                        </div>
+
+                        <!-- Taahhütler -->
+                        <div class="mb-4">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="taahhut1" required>
+                                <label class="form-check-label" for="taahhut1">
+                                    Bu eşyaya gerçekten ihtiyacım olduğunu ve uygun şekilde kullanacağımı taahhüt ediyorum. *
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="taahhut2" required>
+                                <label class="form-check-label" for="taahhut2">
+                                    Bağışçı ile saygılı bir şekilde iletişime geçeceğim ve buluşma kurallarına uyacağım. *
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="taahhut3" required>
+                                <label class="form-check-label" for="taahhut3">
+                                    Verilen kişisel bilgilerin doğru olduğunu kabul ediyorum. *
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('esya_detay', esya_id=esya.id) }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-paper-plane"></i> Talebi Gönder
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Yardım -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6><i class="fas fa-question-circle"></i> Sorularınız mı var?</h6>
+                            <p class="mb-0 text-muted">
+                                Talep süreci hakkında daha fazla bilgi almak istiyorsanız yardım sayfamızı ziyaret edin.
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('hakkimizda') }}" class="btn btn-outline-info">
+                                <i class="fas fa-info-circle"></i> Yardım Al
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
